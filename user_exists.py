@@ -16,7 +16,7 @@ def check_user_account_exists(email, username, password, database):
         bool: True if a user with given email exists, False otherwise.
 
     :raises
-        mysql.connector.Error: If an error occurs will connecting to the database or performing query.    
+        mysql.connector.Error: If an error occurs will connecting to the database or performing query.
     """
     try:
 
