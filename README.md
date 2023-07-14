@@ -1,2 +1,2 @@
 # 00-SpiceWorks-Migration
-Spiceworks database migration to OsTick
+Spiceworks database migration to OsTicket
