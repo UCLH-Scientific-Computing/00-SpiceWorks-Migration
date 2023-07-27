@@ -23,6 +23,7 @@ def get_comments(id):
         A dictionary of comment thread info derived from database fields:
             id: the ticket id
             body: an HTML string of all the comments collated together
+        Note: if the ticket has no comments, *OR* doesn't exist, body will be ''
     """
     con = get_spiceworks()
     cursor = con.cursor()
@@ -30,4 +31,4 @@ def get_comments(id):
     result = cursor.execute(query, {'id': id})
     comments = [ make_html_comment(row) for row in result.fetchall() ]
     con.close()
-    return '<hr>'.join(comments)
+    return {'id' : id, 'body' : '<h2>From Spiceworks</h2>%s<hr>Attachments folder: <code>Tickets/%s</code>' % ('<hr>'.join(comments), id) }

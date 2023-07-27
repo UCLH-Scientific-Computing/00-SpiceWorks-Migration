@@ -24,6 +24,7 @@ def get_user(id):
             email: the user email
             name: the user name, concatenating first_name and last_name
             phone: the user phone number, concatenating office_phone and mobile_phone
+        if the user doesn't exist, returns an empty dict.
     """
     con = get_spiceworks()
     cursor = con.cursor()
@@ -31,4 +32,6 @@ def get_user(id):
     cursor.execute(query, {'id': id})
     result = cursor.fetchone()
     con.close()
+    if result is None:
+        return {}
     return dict(zip(['id', 'email', 'name', 'phone'], result))
