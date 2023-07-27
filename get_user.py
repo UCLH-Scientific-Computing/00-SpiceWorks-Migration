@@ -30,4 +30,5 @@ def get_user(id):
     query = 'SELECT id, email, TRIM(first_name || " " || last_name), TRIM(office_phone || " " || cell_phone) FROM users WHERE id = :id'
     cursor.execute(query, {'id': id})
     result = cursor.fetchone()
+    con.close()
     return dict(zip(['id', 'email', 'name', 'phone'], result))

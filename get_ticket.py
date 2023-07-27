@@ -20,7 +20,7 @@ def get_ticket(id):
     -------
     dict of {str : str}    
         A dictionary of ticket info derived from database fields:
-            ticket id (from `tickets.id`) note: this is also one of the inputs! Returned for validation
+            id (from `tickets.id`)
             summary (from `tickets.summary`)
             description (from `tickets.description`) **potentially look to do some text cleaning if there is an encoding issue**
             created_at (from `tickets.created_at`)
@@ -28,10 +28,14 @@ def get_ticket(id):
             created_by, but by the email of that user (from `users.email where users.id = tickets.created_by`)
             spe (from `tickets.c_spe`)
             department (from `tickets.c_department`)
+        If the input id did not yield a ticket, returns an empty dict.
     """
     con = get_spiceworks()
     cursor = con.cursor()
     query = 'SELECT tickets.id, summary, description, tickets.created_at, closed_at, users.email, c_spe, c_department FROM tickets JOIN users on tickets.created_by = users.id WHERE tickets.id = :id'
     cursor.execute(query, {'id': id})
     result = cursor.fetchone()
+    con.close()
+    if result is None:
+        return {}
     return dict(zip(['id', 'summary', 'description', 'created_at', 'closed_at', 'created_by', 'spe', 'department'], result))
