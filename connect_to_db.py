@@ -49,7 +49,9 @@ def get_creds(text_file_path):
         text_file_path (str): The file path to a text file with credentials to MySQL database
 
     :return
-        username, password (tuple): Username and Password to use to connect to MySQL database
+        tuple: A tuple containing two elements:
+            - username (str): Username to connect to MySQL database
+            - password (str): Password to connect to MySQL database
 
     :raises
         Error: If an error occurs when opening the file or reading credentials.    
