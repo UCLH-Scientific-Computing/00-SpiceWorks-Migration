@@ -1,2 +1,3 @@
 # 00-SpiceWorks-Migration
-Spiceworks database migration to OsTicket
+Spiceworks 7.5.00107 database to OsTicket v1.18 migration
+
