@@ -1,5 +1,17 @@
 # General functions
 
+## Get credentials to database
+
+### Inputs
+
+- **`text_file_path`** (str): The file path to a text file with credentials to MySQL database
+
+### Outputs
+
+- **`tuple`**: A tuple containing two elements:
+    - username (str): Username to connect to MySQL database
+    - password (str): Password to connect to MySQL database
+
 ## Get connection object to database
 
 ### Inputs
@@ -49,10 +61,26 @@ All users are identified by email.
 
 # Create a ticket
 
+## Find System Name (custom field)
+
+### Inputs
+
+## Find Hospital Name (custom field)
+
+### Inputs
+
+## Create a ticket
+
 ### Inputs
 
 - **`ticket_details`** (dict): Dictionary of {str: str} of ticket info.
 - **`database`**  (str): The name of the database to connect to 
+
+### Outputs
+
+- **`tuple`**: A tuple containing two elements:
+    - The first element is a bool, True if the ticket was created, False if the ticket number already existed.
+    - The second element is an int representing the ticket_id 
 
 # Posting an Internal Note
 
