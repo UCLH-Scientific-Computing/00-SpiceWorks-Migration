@@ -17,16 +17,21 @@ def create_user_if_not_exists(email, name = '', phone = ''):
         phone (str): The phone number of user (if exists, otherwise '').
        
     :return
-        bool: True if a user was created, False if user already exists
+        tuple: A tuple containing two elements:
+            - The first element is a bool, True if the user was created, False if the user already existed.
+            - The second element is an int representing the user_id 
 
     :raises
         mysql.connector.Error: If an error occurs will connecting to the database or performing query.
     """
     try:
-        # Check if user exists
+        # Get user credentials 
         username, password = get_creds('db_creds.txt')
-        if check_user_account_exists(email, username, password, 'osticket_test'):
-            return False
+
+        # Check if user account already exists, if user exists return false and the user_id
+        exists = check_user_account_exists(email, username, password, 'osticket_test')
+        if exists[0]:
+            return (False, exists[1])
         
         else:
             # Connect to the MySQL database
@@ -79,7 +84,7 @@ def create_user_if_not_exists(email, name = '', phone = ''):
             cursor.close()
             connection.close()
 
-            return True
+            return (True, user_id)
         
     except mysql.connector.Error as error:
         # Rollback transaction in case of error
@@ -94,7 +99,7 @@ if __name__ == '__main__':
     name = 'buddy'
     phone = '1234567890'
 
-    if create_user_if_not_exists(email, name, phone):
+    if create_user_if_not_exists(email, name, phone)[0]:
         print('User {} was created'.format(email))
     else:
         print('User {} already exists'.format(email))
