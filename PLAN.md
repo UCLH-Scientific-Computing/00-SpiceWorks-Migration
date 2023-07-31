@@ -4,7 +4,7 @@
 
 ### Inputs
 
-- **`text_file_path`** (str): The file path to a text file with credentials to MySQL database
+- **`text_file_path`** (str): The file path to a text file with credentials to MySQL database in dict format
 
 ### Outputs
 
@@ -61,13 +61,18 @@ All users are identified by email.
 
 # Create a ticket
 
-## Find System Name (custom field)
+## Find System/Hospital Name (custom field)
 
 ### Inputs
 
-## Find Hospital Name (custom field)
+- **`text_file_path`** (str): The file path to a text file with **`ost_list_items`** table items in dict format
+- **`name`** (str) : A system or hospital name to search the dict for
 
-### Inputs
+### Outputs
+
+- **`tuple`**: A tuple containing two elements:
+    - The first element is a bool, True if the system/hospital name exists, False if not.
+    - The second element is an int representing the id for the system/hospital
 
 ## Create a ticket
 
