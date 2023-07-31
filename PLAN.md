@@ -1,4 +1,4 @@
-# General functions
+# <span style ="color:blue">General functions</span>
 
 ## Get credentials to database
 
