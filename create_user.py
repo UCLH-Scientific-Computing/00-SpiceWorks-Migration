@@ -46,14 +46,31 @@ def create_user_if_not_exists(email, name = '', phone = ''):
             query_fix_user_id = "UPDATE ost_user_email SET user_id = %s WHERE id = %s"
             cursor.execute(query_fix_user_id, (user_id, user_id))
              
-
             # Insert into ost_user
             query_insert_user = "INSERT INTO ost_user (id, name, org_id, created, updated, default_email_id) VALUES (%s, %s, 0, NOW(), NOW(), %s)"
             cursor.execute(query_insert_user, (user_id, name, user_id))
 
+            # Insert into ost_form_entry 
+            query_insert_form_entry = "INSERT INTO `ost_form_entry` SET `form_id` = 1, `sort` = 1, `created` = NOW(), `object_type` = 'U', `object_id` = %s, `updated` = NOW()"
+            cursor.execute(query_insert_form_entry, (user_id,))
+
+            # Get query insert entry id
+            form_entry_id = cursor.lastrowid 
+
+            # Insert into ost_form_entry_values
+            query_insert_form_entry_values = "INSERT INTO `ost_form_entry_values` SET `field_id` = 3, `entry_id` = %s"
+            cursor.execute(query_insert_form_entry_values, (form_entry_id,))
+
             # Insert or update phone number
             query_insert_phone = "INSERT INTO ost_user__cdata (user_id, phone) VALUES (%s, %s);"
             cursor.execute(query_insert_phone, (user_id, phone))
+
+            # Create correct syntax for content
+            content = f' {email}\n{email}'
+
+            # Replace into ost__search
+            query_replace_search = "REPLACE INTO ost__search SET object_type='U', object_id=%s, content= %s, title=%s"
+            cursor.execute(query_replace_search, (user_id, content, name))
 
             # Commit the changes
             connection.commit()
@@ -63,6 +80,7 @@ def create_user_if_not_exists(email, name = '', phone = ''):
             connection.close()
 
             return True
+        
     except mysql.connector.Error as error:
         # Rollback transaction in case of error
         connection.rollback()
