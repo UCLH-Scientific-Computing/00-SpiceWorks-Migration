@@ -1,4 +1,4 @@
-# <span style ="color:red">**General Functions**</span>
+# <span style ="color:blue">**General Functions**</span>
 
 ## Get credentials to database
 
@@ -25,7 +25,7 @@
 
 - **`mysql.connector.connection.MySQLConnection`**: The MySQL connection object 
 
-# Create a User
+# <span style="color:blue">**Create a User**</span>
 
 ## Check if user exists already
 
@@ -59,7 +59,7 @@ All users are identified by email.
     - The first element is a bool, True if the user was created, False if the user already existed.
     - The second element is an int representing the user_id 
 
-# Create a ticket
+# <span style="color:blue">**Create a Ticket**</span>
 
 ## Find System/Hospital Name (custom field)
 
@@ -98,4 +98,4 @@ All users are identified by email.
     - The first element is a bool, True if the ticket was created, False if the ticket number already existed.
     - The second element is an int representing the ticket_id 
 
-# Posting an Internal Note
+# <span style="color:blue">**Posting an Internal Note**</span>
