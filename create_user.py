@@ -1,7 +1,7 @@
 # Function for creating a new user is one does not already exist
 #
 # Author:   Sierra Bonilla
-# Date:     14-07-2023
+# Date:     31-07-2023
 
 import mysql.connector
 from connect_to_db import connect_to_mysql, get_creds
@@ -34,7 +34,7 @@ def create_user_if_not_exists(email, name = '', phone = ''):
             return (False, exists[1])
         
         else:
-            # Connect to the MySQL database
+            # Connect to the MySQL database; Change spiceworks to host server
             connection = connect_to_mysql('spiceworks', username, password, 'osticket_test')
             
             # Create a cursor object to execute the queries

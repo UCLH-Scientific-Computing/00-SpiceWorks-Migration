@@ -28,7 +28,7 @@ All users are identified by email.
 
 ### Outputs
 
-- tuple: A tuple containing two elements:
+- **`tuple`**: A tuple containing two elements:
     - The first element is a bool, True if the user exists, False otherwise.
     - The second element is an int representing the user_id if the user exists,
         or None if the user does not exist.results tuple(bool, int): True if a user with given email exists along with user_id, False otherwise.
@@ -48,6 +48,11 @@ All users are identified by email.
     - The second element is an int representing the user_id 
 
 # Create a ticket
+
+### Inputs
+
+- **`ticket_details`** (dict): Dictionary of {str: str} of ticket info.
+- **`database`**  (str): The name of the database to connect to 
 
 # Posting an Internal Note
 
