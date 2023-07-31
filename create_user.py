@@ -7,7 +7,7 @@ import mysql.connector
 from connect_to_db import connect_to_mysql, get_creds
 from user_exists import check_user_account_exists
 
-def create_user_if_not_exists(email, name = '', phone = ''):
+def create_user_if_not_exists(email, name = '', phone = '', hostname='spiceworks', database='osticket_test'):
     """
     Creates a user if one does not already exist in the database.
 
@@ -15,6 +15,8 @@ def create_user_if_not_exists(email, name = '', phone = ''):
         email (str): The email address to check.
         name (str): The name of the user (if exists, otherwise '').
         phone (str): The phone number of user (if exists, otherwise '').
+        hostname (str, optional): The hostname of the database. Default is 'spiceworks'.
+        database_name (str, optional): The name of the database. Default is 'osticket_test'.
        
     :return
         tuple: A tuple containing two elements:
@@ -29,13 +31,13 @@ def create_user_if_not_exists(email, name = '', phone = ''):
         username, password = get_creds('db_creds.txt')
 
         # Check if user account already exists, if user exists return false and the user_id
-        exists = check_user_account_exists(email, username, password, 'osticket_test')
+        exists = check_user_account_exists(email, username, password, hostname=hostname,database=database)
         if exists[0]:
             return (False, exists[1])
         
         else:
-            # Connect to the MySQL database; Change spiceworks to host server
-            connection = connect_to_mysql('spiceworks', username, password, 'osticket_test')
+            # Connect to the MySQL database
+            connection = connect_to_mysql(hostname, username, password, database)
             
             # Create a cursor object to execute the queries
             cursor = connection.cursor()

@@ -6,7 +6,7 @@
 import mysql.connector
 from connect_to_db import connect_to_mysql, get_creds
 
-def check_user_account_exists(email, username, password, database):
+def check_user_account_exists(email, username, password, hostname='spiceworks', database='osticket_test'):
     """
     Check if a user with a specific email exists in the 'ost_user_email' table.
 
@@ -14,7 +14,8 @@ def check_user_account_exists(email, username, password, database):
         email (str): The email address to check.
         username (str): The username to authenticate with the MySQL server
         password (str): The password to authenticate with the MySQL server
-        database (str): The name of the database to connect to 
+        hostname (str, optional): The hostname of the database. Default is 'spiceworks'.
+        database_name (str, optional): The name of the database. Default is 'osticket_test'.
 
     :return
         tuple: A tuple containing two elements:
@@ -28,7 +29,7 @@ def check_user_account_exists(email, username, password, database):
     try:
 
         # Connect to the MySQL database
-        connection = connect_to_mysql('spiceworks', username, password, database)
+        connection = connect_to_mysql(hostname, username, password, database)
 
         # Create a cursor object to execute query 
         cursor = connection.cursor()
@@ -60,7 +61,7 @@ if __name__ == '__main__':
     email = 'random.person@nhs.net'
     database = 'osticket_test'
 
-    result = check_user_account_exists(email, username, password, database)
+    result = check_user_account_exists(email, username, password, database=database)
 
     if result[0]:
         print('User with email: ' + email + ' exists already! WOW')

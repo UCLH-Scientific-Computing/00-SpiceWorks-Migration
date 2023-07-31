@@ -2,7 +2,8 @@
 __pycache__/
 *.py[cod]
 *$py.class
-*.txt
+db_creds.txt
+ost_list_items_dict.txt
 
 # C extensions
 *.so
