@@ -1,6 +1,10 @@
 # Function for checking if user exists
+#
+# Author:   Sierra Bonilla
+# Date:     14-07-2023
+
 import mysql.connector
-from connect_to_db import connect_to_mysql
+from connect_to_db import connect_to_mysql, get_creds
 
 def check_user_account_exists(email, username, password, database):
     """
@@ -44,14 +48,16 @@ def check_user_account_exists(email, username, password, database):
 
         return exists
     except mysql.connector.Error as error:
+        # Rollback transaction in case of error
+        connection.rollback()
 
         raise error
     
 if __name__ == '__main__':
 
+    username, password = get_creds('db_creds.txt')
+
     email = 'random.person@nhs.net'
-    username = 'migrator'
-    password = 'nicetry'
     database = 'osticket_test'
 
     result = check_user_account_exists(email, username, password, database)

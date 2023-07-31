@@ -1,6 +1,10 @@
 # Function for creating a new user is one does not already exist
+#
+# Author:   Sierra Bonilla
+# Date:     14-07-2023
+
 import mysql.connector
-from connect_to_db import connect_to_mysql
+from connect_to_db import connect_to_mysql, get_creds
 from user_exists import check_user_account_exists
 
 def create_user_if_not_exists(email, name = '', phone = ''):
@@ -20,12 +24,13 @@ def create_user_if_not_exists(email, name = '', phone = ''):
     """
     try:
         # Check if user exists
-        if check_user_account_exists(email, 'migrator', 'nicetry', 'osticket_test'):
+        username, password = get_creds('db_creds.txt')
+        if check_user_account_exists(email, username, password, 'osticket_test'):
             return False
         
         else:
             # Connect to the MySQL database
-            connection = connect_to_mysql('spiceworks', 'migrator', 'London2023!', 'osticket_test')
+            connection = connect_to_mysql('spiceworks', username, password, 'osticket_test')
             
             # Create a cursor object to execute the queries
             cursor = connection.cursor()
@@ -43,8 +48,8 @@ def create_user_if_not_exists(email, name = '', phone = ''):
              
 
             # Insert into ost_user
-            query_insert_user = "INSERT INTO ost_user (name, org_id, created, updated, default_email_id) VALUES (%s, 0, NOW(), NOW(), %s)"
-            cursor.execute(query_insert_user, (name, user_id))
+            query_insert_user = "INSERT INTO ost_user (id, name, org_id, created, updated, default_email_id) VALUES (%s, %s, 0, NOW(), NOW(), %s)"
+            cursor.execute(query_insert_user, (user_id, name, user_id))
 
             # Insert or update phone number
             query_insert_phone = "INSERT INTO ost_user__cdata (user_id, phone) VALUES (%s, %s);"
@@ -59,6 +64,9 @@ def create_user_if_not_exists(email, name = '', phone = ''):
 
             return True
     except mysql.connector.Error as error:
+        # Rollback transaction in case of error
+        connection.rollback()
+
         # Handle the error
         raise error
 
