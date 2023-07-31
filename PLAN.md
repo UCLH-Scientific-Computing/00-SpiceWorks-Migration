@@ -74,6 +74,17 @@ All users are identified by email.
     - The first element is a bool, True if the system/hospital name exists, False if not.
     - The second element is an int representing the id for the system/hospital
 
+## Check if a ticket exists
+
+### Inputs
+
+- **`connection`** (mysql.connector.Connection): A connection object to the MySQL database.
+- **`ticket_number_str`** (str): The ticket number in the format of '001234'.
+
+### Outputs
+
+- **`bool`**: True if ticket exists, False if the ticket doesn't exist.
+
 ## Create a ticket
 
 ### Inputs
@@ -88,5 +99,3 @@ All users are identified by email.
     - The second element is an int representing the ticket_id 
 
 # Posting an Internal Note
-
-# Closing the ticket 
