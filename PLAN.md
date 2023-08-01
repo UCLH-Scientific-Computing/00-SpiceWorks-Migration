@@ -25,6 +25,7 @@
 
 - **`mysql.connector.connection.MySQLConnection`**: The MySQL connection object 
 
+
 # <span style="color:blue">**Create a User**</span>
 
 ## Check if user exists already

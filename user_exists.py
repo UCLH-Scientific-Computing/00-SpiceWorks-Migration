@@ -64,6 +64,7 @@ if __name__ == '__main__':
     result = check_user_account_exists(email, username, password, database=database)
 
     if result[0]:
+        print('🦆 - 🦆 - 🦆 - 🦆 - 🦆 - 🦆 - 🦆 - 🦆 - 🦆 - 🦆')
         print('User with email: ' + email + ' exists already! WOW')
     else:
         print('User with email: ' + email + ' does not already exist! Please create a new user.')

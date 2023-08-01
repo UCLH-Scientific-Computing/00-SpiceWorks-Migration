@@ -1,5 +1,7 @@
 # 00-SpiceWorks-Migration
-Spiceworks 7.5.00107 database to OsTicket v1.18 migration
+Spiceworks 7.5.00107 to OsTicket v1.18 database migration 🦆
+
+The migration process involves transferring ticket data, including ticket details, comments, and user information, from the Spiceworks database to the osTicket database - noatably, we ignored attachments. To achieve this, import functions have been created based on the analysis of osTicket's SQL logs.
 
 ## Getting Started 
 
@@ -22,9 +24,11 @@ You can install the required packages using pip:
 ### Customization
 
 Before running, make sure to customize the following items for your own OsTicket configuration: 
-- Update the MySQL database credentials (as seen in example_creds.txt)
+- Update MySQL database credentials in example_creds.txt and rename file db_creds.txt (note: this requires that the pc that you are connecting to the database has been granted priveleges to remote connect e.g. `GRANT ALL PRIVILEGES ON *.* TO 'migrator_username'@'%' IDENTIFIED BY 'password';`)
 - Modify the **`hostname`** and **`database_name`** parameters in the function calls to match your osTicket database configuration 
-- If your osTicket instance has custom fields, adjust the **`ticket_details`** dictionary in the **`create_ticket`** function to include the appropriate custom fields and their corresponding values (removing the system and department fields - our custom fields)
+- In **`create_ticket`** function on first insert into ost_ticket, change value 18 to preferred imported help topic found in **`ost_help_topic table`** (**CHANGE 18 -> YOUR IMPORTED HELP TOPIC ID**)
+- **REMOVE LAST 4 FIELDS IN** **`ticket_details`** **DICT AND INSERT STATEMENTS IN** **`create_ticket`** **WITH CHANGE/REMOVE OR FUNCTION WILL NOT WORK**
+- If your osTicket instance has custom fields, adjust the **`ticket_details`** dictionary in the **`create_ticket`** function to include the appropriate custom fields and their corresponding values and you'll need to add your own SQL insert calls
 - Save columns **`id`** and **`value`** from **`ost_list_items`** table as a dictionary {id:value}
 
 ### To-Do tomorrow: 
