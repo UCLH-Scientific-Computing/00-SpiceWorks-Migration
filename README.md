@@ -32,14 +32,17 @@ Before running, make sure to customize the following items for your own OsTicket
 - Save columns **`id`** and **`value`** from **`ost_list_items`** table as a dictionary {id:value}
 
 ### To-Do tomorrow: 
-1. create proper Read-Me
-2. fill in create_ticket 
-3. test create_ticket 
-
- To-Do Wednesday:
- 1. create post_replies 
- 2. test post_replies
+1. finish in create_ticket 
+2. test create_ticket 
 
  To-Do Thursday:
+ 1. create post_replies 
+ 
+
+ To-Do Friday:
+ 1. test post_replies
+
+ To-Do Next Week:
  1. create integration script that runs export from spiceworks and import to osticket 
+ 1. Finish proper Read-Me
 

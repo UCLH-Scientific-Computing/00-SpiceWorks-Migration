@@ -130,7 +130,8 @@ def create_ticket(ticket_details, hostname='spiceworks', database_name='osticket
             query_cdata_dep = "INSERT INTO `ost_ticket__cdata` SET `h_departments`=%s, `ticket_id`= %s ON DUPLICATE KEY UPDATE `h_departments`=%s"
             cursor.execute(query_cdata_dep, (ticket_details["department_id"], ticket_id, ticket_details["department_id"]))
 
-            # Insert into ost_thread_event 
+            # Insert into ost_thread_event (CHANGE USERNAME)
+            #query_thread_event = "INSERT INTO `ost_thread_event` SET `thread_type` = 'T', `staff_id` = 3, `dept_id` = 1, `topic_id` = 17, `timestamp` = NOW(), `uid_type` = 'S', `uid` = 3, `username` = 'sbonilla', `event_id` = 1, `thread_id` = 117"
 
             # Update ost_ticket (ticket status -> 2 = closed, closed -> date)
 
