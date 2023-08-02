@@ -36,13 +36,13 @@ Before running, make sure to customize the following items for your own OsTicket
 2. test create_ticket 
 
  To-Do Thursday:
- 1. create post_replies 
- 
+ 1. create import bot staff user to post all replies/comments 
+ 2. create post_replies 
 
  To-Do Friday:
  1. test post_replies
 
  To-Do Next Week:
  1. create integration script that runs export from spiceworks and import to osticket 
- 1. Finish proper Read-Me
+ 2. finish proper Read-Me
 

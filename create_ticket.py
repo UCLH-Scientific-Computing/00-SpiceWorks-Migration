@@ -7,7 +7,6 @@ import mysql.connector
 import json
 from datetime import datetime 
 from connect_to_db import connect_to_mysql, get_creds
-from create_user import create_user_if_not_exists
 from create_ticket_helper_fns import ticket_exists 
 
 def create_ticket(ticket_details, hostname='spiceworks', database_name='osticket_test'):
