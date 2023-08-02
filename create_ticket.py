@@ -69,7 +69,7 @@ def create_ticket(ticket_details, hostname='spiceworks', database_name='osticket
         # Prepare your imported help topic id (CUSTOM FIELD: HELP TOPIC ID -> CHANGE)
         help_topic_id = 18
 
-        # ---------------------------------- CONNECT TO DATABASE ---------------------------------- 
+        # -------------------------------------- CONNECT TO DATABASE -------------------------------------- 
 
         # Get user credentials 
         username, password = get_creds('db_creds.txt')        
@@ -84,7 +84,7 @@ def create_ticket(ticket_details, hostname='spiceworks', database_name='osticket
 
             return (False, None)
         
-        # ------------------------------------- CREATE TICKET ------------------------------------- 
+        # ----------------------------------------- CREATE TICKET ----------------------------------------- 
         else:
 
             # Create a cursor object to execute the queries
@@ -104,7 +104,8 @@ def create_ticket(ticket_details, hostname='spiceworks', database_name='osticket
             cursor.execute(query_thread_initiate, (ticket_id, ticket_id))
 
             # Insert into ost_form_entry 
-            query_form_entry_initiate = "INSERT INTO `ost_form_entry` SET `form_id` = 2, `sort` = 0, `created` = NOW(), `extra` = '{\"disable\":[]}', `object_type` = 'T', `object_id` = %s, `updated` = NOW()"
+            query_form_entry_initiate = """INSERT INTO `ost_form_entry` SET `form_id` = 2, `sort` = 0, `created` = NOW(), 
+            `extra` = '{\"disable\":[]}', `object_type` = 'T', `object_id` = %s, `updated` = NOW()"""
             cursor.execute(query_form_entry_initiate, (ticket_id, ))
 
             # Get form_entry_id 
@@ -178,7 +179,7 @@ def create_ticket(ticket_details, hostname='spiceworks', database_name='osticket
             query_search_thread = "REPLACE INTO ost__search SET object_type='H', object_id=%s, content=%s, title=%s"
             cursor.execute(query_search_thread, (thread_entry_id, ticket_details["description"], ticket_details["summary"]))
 
-            # ------------------------------------- CLOSE TICKET ------------------------------------- 
+            # ------------------------------------------ CLOSE TICKET ------------------------------------------ 
 
             # Update ost_ticket (ticket status -> 3 = closed) 
             query_close_ticket = """UPDATE `ost_ticket` SET `lastupdate` = NOW(), `closed` = %s, `status_id` = 3, 
@@ -199,6 +200,8 @@ def create_ticket(ticket_details, hostname='spiceworks', database_name='osticket
             `topic_id` = %s, `timestamp` = NOW(), `uid_type` = 'S', `uid` = %s, `username` = %s, `event_id` = 2, `team_id` = 0,
             `data` = '{\"status\":[3,\"Closed\"]}', `thread_id` = %s"""
             cursor.execute(query_final_thread_event, (staff_id, help_topic_id, staff_id, staff_username, ticket_id))
+
+            # ----------------------------------------- CLOSE CONNECTION -----------------------------------------
 
             # Commit changes
             connection.commit()
@@ -231,6 +234,6 @@ if __name__ == '__main__':
     result = create_ticket(ticket_details)
 
     if result[0]:
-        print('Ticket was created & closed: {}/{}'.format(result[1], ticket_details["id"]))
+        print('\nTicket was created & closed! \n \U0001f984 Ticket ID: {}\n \U0001f984 Ticket Number: {}\n'.format(result[1], ticket_details["id"]))
     else:
-        print('Ticket already exists: {}'.format(ticket_details["id"]))
+        print('\nTicket already exists! \n \U0001f984 Ticket Number: {}\n'.format(ticket_details["id"]))
