@@ -1,0 +1,13 @@
+{
+    "id": 4013,
+    "summary": "Netrwork Share issues on Vyaire device",
+    "description": "users need access to a folder but users get error when PC is rebooted and they try connecting again",
+    "created_at": "2023-05-03 15:57:36",
+    "closed_at": "2023-05-03 18:36:25",
+    "created_by": 4,
+    "assigned_to": 3,
+    "spe": "VYARE",
+    "spe_id":26,
+    "department": "LUNG FUNCTION",
+    "department_id":35
+}

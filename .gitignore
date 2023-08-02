@@ -2,6 +2,10 @@
 __pycache__/
 *.py[cod]
 *$py.class
+db_creds.txt
+ost_list_items_dict.txt
+staff_dict.txt
+user_dict.txt
 
 # C extensions
 *.so
