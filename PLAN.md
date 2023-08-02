@@ -94,57 +94,91 @@ All users are identified by email.
 
 # <span style ="color:blue">**Import from Spiceworks**</span>
 
-## Get info about ticket sender `getSender`
+## Get info about ticket sender `get_user`
 
 ### Inputs
 
-- **`swconn`** a connection to SpiceWorks
-- **`ticket`** the ticket ID (`tickets.id`) *OR* **`user`** the user ID (`ticket.reported_by_id`) **Which one do we want?**
+- **`user`** (int) the user ID (`ticket.reported_by_id`)
 
 ### Outputs
 
-- email (from `users.email`)
-- name (from (`users.first_name` + `users_last.name`)) **This field is only filled out for "real" users (ProUser type) - what do we want to do with email-only users (EndUser type)?**
-- phone number (from `users.office_phone` or `users.cell_phone`) **This field is almost always empty in SW - do we actually want it?**
+- **`dict`** of `{str : str}`
+  A dictionary of user info derived from database fields:
+  - id: the user id
+  - email: the user email, from `users.email`
+  - name: the user name, concatenating first_name and last_name from `users.first_name` + `users_last.name` (only populated for "staff" users)
+  - phone: the user phone number, concatenating `users.office_phone` and `users.cell_phone` (rarely populated)   
 
-## Get ticket content `getTicket`
+If the user doesn't exist, returns an empty dict.
+
+## Get ticket content `get_ticket`
 
 ### Inputs
 
-- **`swconn`** a connection to SpiceWorks
-- **`ticket`** the ticket ID (`tickets.id`)
+- **`ticket`** (int) the ticket ID (`tickets.id`)
 
 ### Outputs
 
-- ticket id (from `tickets.id`) note: this is also one of the inputs! Returned for validation
-- summary (from `tickets.summary`)
-- description (from `tickets.description`) this is **not** currently HTML-ified in any way
-- Time ticket of last
-    - Created (from `tickets.created_at`)
-    - Closed (from `tickets.closed_at`)
-- Created by, but by the email of that user (from `users.email where users.id = tickets.created_by`)
-- Assigned to, but by the email of that user (from `users.email where users.id = tickets.assigned_to`)
-- c_spe (from `tickets.c_spe`)
-- c_department (from `tickets.c_department`)
+- **`dict`** of `{str : str}`
+    A dictionary of user info derived from database fields:
+    - id (from `tickets.id`)
+    - summary (from `tickets.summary`)
+    - description (from `tickets.description`) Note: no cleaning/HTML-ification performed here
+    - created_at (from `tickets.created_at`)
+    - closed_at (from `tickets.closed_at`)
+    - created_by, but by the email of that user (from `users.email where users.id = tickets.created_by`)
+    - assigned_to, but by the email of that user (from `users.email where users.id = tickets.assigned_to`)
+    - spe (from `tickets.c_spe`)
+    - department (from `tickets.c_department`)
 
-## Get all ticket comments into one big HTML string
+If the input id did not yield a ticket, returns an empty dict.
+
+## Get all ticket comments into one big HTML string `get_comments`
 
 ### Inputs
 
-- **`swconn`** a connection to SpiceWorks
-- **`ticket`** the ticket ID (`tickets.id`)
+- **`ticket`** (int) the ticket ID (`tickets.id`)
 
 ### Outputs
 
-- comment chunk built from `comments` in the following format
+- **`dict`** of `{str : str}`
+  A dictionary of comment thread info derived from database fields:
+  - id: the ticket id, from `comments.ticket_id`
+  - body: an HTML string of all the comments collated together, constructed from various fields in the `comments` table (see `make_html_comment` for formatting info)
 
-        <h3>created_at time created_by person 1 email:</h3> <p>content of body..</p> <hr>
-        <h3>created_at time created_by person 2 email:</h3> <p>content of body..</p> <hr>
-        <p>Find the attachments to this ticket: C:\\Program Files (x86)\\Spiceworks\\data\\uploads\\Ticket\\ticket_id<br /></p>'
+If the ticket has no comments, *OR* doesn't exist, body will be ''
 
-  content extracted from
-    - person email: `users.email where users.id = comments.created_by`
-    - timestamp: `comments.created_at`
-    - body: `comments.body` **May need a bit of HTML transform (e.g. `<br>` lines)**
-    - attachments: `C:\\Program Files (x86)\\Spiceworks\\data\\uploads\\Ticket\\`*`ticket_id`*`\\`_`attachment_name`_
-  collated from `comments where comments.ticket_id = tickets.id`
+## Connection helper and wrapper `get_spiceworks`
+
+### Inputs
+
+- **`location`** (str|None)
+  The path to the Spiceworks SQLite database file; if None, it will look for it in a config text file `SWlocation.txt`
+
+### Outputs
+
+- **`sqlite3.Connection`** object
+
+## HTML comment thread helper `make_html_comment`
+
+### Inputs
+
+- **`row`** : tuple(\<int\>, \<int\>, \<string\>, \<string\>, \<string\>, \<string\>|None)
+  The row data as extracted inside get_comments, containing:
+  - id: the comment id (not used currently)
+  - ticket_id: the id of the ticket this comment is for
+  - body: the text of the comment
+  - created_at: the timestamp of comment submission
+  - email: the email of the comment author
+  - attachment: the name of an attached file, if any, or None.
+
+ ### Outputs
+
+- **`str`**
+  An HTML string with each comment in reverse submission order, with an H3 header for the author email and timestamp, the (roughly HTML-ified) body text, and the name of the attachment, if any.
+  Note that threading of comments into a single HTML block is done by `get_comments`
+
+  Example: 
+
+        <h3><code>example_person@email.com</code> on 2022-01-01 10:00:00</h3><p>content of body..</p><p>Attachment: <em>myfile.jpg</em></p>
+

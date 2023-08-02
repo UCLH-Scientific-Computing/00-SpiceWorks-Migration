@@ -15,7 +15,8 @@ def get_spiceworks(location = None):
 
     Parameters
     ----------
-    None
+    location : str|None
+        A path to the location of the Spiceworks dataabse file; if None, will look for a config file.
 
     Returns
     -------
