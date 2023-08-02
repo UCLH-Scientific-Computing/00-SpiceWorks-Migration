@@ -28,10 +28,28 @@ def create_ticket(ticket_details, hostname='spiceworks', database_name='osticket
         mysql.connector.Error: If an error occurs while executing the query.
     """
     try:
-        # Prepare SQL input Variables
+        # ------------------------------ PREPARE SQL INPUT VARIABLES ------------------------------ 
+
+        # Prepare user_id from osTicket db
+        user_id = ticket_details["created_by"]
+
+        # Prepare user email from osTicket db
+        user_email = ticket_details["created_by_email"]
+
+        # Prepare staff_id from osTicket db
+        staff_id = ticket_details["assigned_to"]
+
+        # Prepare staff_id username from osTicket db
+        staff_username = ticket_details["assigned_to_username"]
 
         # Prepare ticket_number in correct format
         ticket_number_str = str(ticket_details["id"]).zfill(6)
+
+        # Prepare search title 
+        search_title = ticket_number_str + ticket_details["summary"]
+
+        # Prepare ticket body recipients
+        ticket_recipients = '{\"to\":{\"' + str(user_id) + '\":\"<' + user_email + '>\"}}'
 
         # Prepare created_at in correct format
         created_at = datetime.strptime(ticket_details["created_at"], '%Y-%m-%d %H:%M:%S')
@@ -39,11 +57,19 @@ def create_ticket(ticket_details, hostname='spiceworks', database_name='osticket
         # Prepare created_at in correct format
         closed_at = datetime.strptime(ticket_details["closed_at"], '%Y-%m-%d %H:%M:%S')
 
-        # Prepare spe form_entry_values value
+        # Prepare spe form_entry_values value (CUSTOM FIELD: SYSTEM -> CHANGE/REMOVE)
         spe_value = '{\"' + str(ticket_details["spe_id"]) + '\":\"' + ticket_details["spe"] + '\"}'
 
-        # Prepare dep form_entry_values value
+        # Prepare dep form_entry_values value (CUSTOM FIELD: DEPARTMENT -> CHANGE/REMOVE)
         dep_value = '{\"' + str(ticket_details["department_id"]) + '\":\"' + ticket_details["department"] + '\"}'
+
+        # Prepare search content (CUSTOM FIELD: SPE + DEPARTMENT -> CHANGE/REMOVE)
+        search_content = ticket_details["summary"] + r'\nyes' + ticket_details["spe"] + r'\n' + ticket_details["department"]
+
+        # Prepare your imported help topic id (CUSTOM FIELD: HELP TOPIC ID -> CHANGE)
+        help_topic_id = 18
+
+        # ---------------------------------- CONNECT TO DATABASE ---------------------------------- 
 
         # Get user credentials 
         username, password = get_creds('db_creds.txt')        
@@ -58,23 +84,17 @@ def create_ticket(ticket_details, hostname='spiceworks', database_name='osticket
 
             return (False, None)
         
-        # else create the ticket
+        # ------------------------------------- CREATE TICKET ------------------------------------- 
         else:
-            
-            # User_id in OsTicket Db
-            user_id = ticket_details["created_by"]
-
-            # Staff_id in OsTicket Db
-            staff_id = ticket_details["assigned_to"]
 
             # Create a cursor object to execute the queries
             cursor = connection.cursor()
 
-            # Insert into ost_ticket (CHANGE 18 -> YOUR IMPORTED HELP TOPIC)
+            # Insert into ost_ticket
             query_ticket_intiate = """INSERT INTO ost_ticket
             (created, lastupdate, number, user_id, dept_id, sla_id, topic_id, staff_id, ip_address, source, updated)
-            VALUES (%s, NOW(), %s, %s, '1', '1', '18', %s, '8.8.8.8', 'Other', NOW())"""
-            cursor.execute(query_ticket_intiate, (created_at, ticket_number_str, user_id, staff_id))
+            VALUES (%s, NOW(), %s, %s, '1', '1', %s, %s, '8.8.8.8', 'Other', NOW())"""
+            cursor.execute(query_ticket_intiate, (created_at, ticket_number_str, user_id, help_topic_id, staff_id))
 
             # Get ticket_id used for all later transactions
             ticket_id = cursor.lastrowid
@@ -106,11 +126,11 @@ def create_ticket(ticket_details, hostname='spiceworks', database_name='osticket
             query_cdata_prio = "INSERT INTO `ost_ticket__cdata` SET `priority`=2, `ticket_id`= %s ON DUPLICATE KEY UPDATE `priority`=2"
             cursor.execute(query_cdata_prio, (ticket_id, ))
 
-            # Insert into ost_form_entry_values (imported) (CUSTOM FIELD: SYSTEM -> CHANGE/REMOVE) 
+            # Insert into ost_form_entry_values (CUSTOM FIELD: IMPORTED -> CHANGE/REMOVE) 
             query_form_entry_import = "INSERT INTO `ost_form_entry_values` SET `field_id` = 36, `entry_id` = %s, `value` = '{\"yes\":\"yes\"}'"
             cursor.execute(query_form_entry_import, (form_entry_id, ))
 
-            # Insert into ost_ticket__cdata (imported) (CUSTOM FIELD: SYSTEM -> CHANGE/REMOVE) 
+            # Insert into ost_ticket__cdata (CUSTOM FIELD: IMPORTED -> CHANGE/REMOVE) 
             query_cdata_import = "INSERT INTO `ost_ticket__cdata` SET `imported`='yes', `ticket_id`= %s ON DUPLICATE KEY UPDATE `imported`='yes'"
             cursor.execute(query_cdata_import, (ticket_id, ))
 
@@ -130,18 +150,33 @@ def create_ticket(ticket_details, hostname='spiceworks', database_name='osticket
             query_cdata_dep = "INSERT INTO `ost_ticket__cdata` SET `h_departments`=%s, `ticket_id`= %s ON DUPLICATE KEY UPDATE `h_departments`=%s"
             cursor.execute(query_cdata_dep, (ticket_details["department_id"], ticket_id, ticket_details["department_id"]))
 
-            # Insert into ost_thread_event (CHANGE USERNAME)
-            #query_thread_event = "INSERT INTO `ost_thread_event` SET `thread_type` = 'T', `staff_id` = 3, `dept_id` = 1, `topic_id` = 17, `timestamp` = NOW(), `uid_type` = 'S', `uid` = 3, `username` = 'sbonilla', `event_id` = 1, `thread_id` = 117"
+            # Insert into ost_thread_event 
+            query_thread_event = """INSERT INTO `ost_thread_event` SET `thread_type` = 'T', `staff_id` = %s, 
+            `team_id` = 0, `dept_id` = 1, `topic_id` = %s, `timestamp` = NOW(), `uid_type` = 'S', `uid` = 3, 
+            `username` = %s, `event_id` = 1, `thread_id` = %s"""
+            cursor.execute(query_thread_event, (staff_id, help_topic_id, staff_username, ticket_id))
 
-            # Update ost_ticket (ticket status -> 2 = closed, closed -> date)
+            # Update ost_ticket (ticket status -> 1 = open)
+            query_ticket_status = "UPDATE `ost_ticket` SET `status_id` = '1', `updated` = NOW() WHERE `ost_ticket`.`ticket_id` = %s LIMIT 1"
+            cursor.execute(query_ticket_status, (ticket_id, ))
 
             # Replace into ost__search 
+            query_replace_search = "REPLACE INTO ost__search SET object_type='T', object_id=%s, content=%s, title=%s"
+            cursor.execute(query_replace_search, (ticket_id, search_content, search_title))
 
             # Insert into ost_thread_entry (ticket body)
+            query_ticket_body = """INSERT INTO `ost_thread_entry` SET `created` = NOW(), `type` = 'M', `thread_id` = %s, 
+            `format` = 'html', `user_id` = %s, `poster` = %s, `source` = 'Other', `flags` = 577, 
+            `recipients` = %s, `ip_address` = '8.8.8.8', 
+            `body` = %s, `updated` = NOW()"""
+            cursor.execute(query_ticket_body, (ticket_id, user_id, user_email, ticket_recipients, ticket_details["description"]))
+
+            # Get thread ID 
+            thread_entry_id = cursor.lastrowid 
 
             # Replace into ost__search (thready entry)
-
-            # Replace into ost__search (ticket c__data include system + hospital)
+            query_search_thread = "REPLACE INTO ost__search SET object_type='H', object_id=%s, content=%s, title=%s"
+            cursor.execute(query_search_thread, (thread_entry_id, ticket_details["description"], ticket_details["summary"]))
 
             # Update ost_thread_entry (flag)
 
