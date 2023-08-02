@@ -1,6 +1,6 @@
 # <span style ="color:blue">**General Functions**</span>
 
-## Get credentials to database
+## Get credentials to database `get_creds`
 
 ### Inputs
 
@@ -12,7 +12,7 @@
     - username (str): Username to connect to MySQL database
     - password (str): Password to connect to MySQL database
 
-## Get connection object to database
+## Get connection object to database `connect_to_mysql`
 
 ### Inputs
 
@@ -28,7 +28,7 @@
 
 # <span style="color:blue">**Create a User**</span>
 
-## Check if user exists already
+## Check if user exists already `check_user_account_exists`
 
 All users are identified by email.
 
@@ -46,7 +46,7 @@ All users are identified by email.
     - The second element is an int representing the user_id if the user exists,
         or None if the user does not exist.results tuple(bool, int): True if a user with given email exists along with user_id, False otherwise.
 
-## Create a user, if user doesn't exist
+## Create a user, if user doesn't exist `create_user_if_not_exists`
 
 ### Inputs
 
@@ -62,20 +62,7 @@ All users are identified by email.
 
 # <span style="color:blue">**Create a Ticket**</span>
 
-## Find System/Hospital Name (custom field)
-
-### Inputs
-
-- **`text_file_path`** (str): The file path to a text file with **`ost_list_items`** table items in dict format
-- **`name`** (str) : A system or hospital name to search the dict for
-
-### Outputs
-
-- **`tuple`**: A tuple containing two elements:
-    - The first element is a bool, True if the system/hospital name exists, False if not.
-    - The second element is an int representing the id for the system/hospital
-
-## Check if a ticket exists
+## Check if a ticket exists `ticket_exists`
 
 ### Inputs
 
@@ -86,7 +73,7 @@ All users are identified by email.
 
 - **`bool`**: True if ticket exists, False if the ticket doesn't exist.
 
-## Create a ticket
+## Create a ticket `create_ticket`
 
 ### Inputs
 
