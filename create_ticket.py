@@ -46,7 +46,7 @@ def create_ticket(ticket_details, hostname='spiceworks', database_name='osticket
         ticket_number_str = str(ticket_details["id"]).zfill(6)
 
         # Prepare search title 
-        search_title = ticket_number_str + ticket_details["summary"]
+        search_title = ticket_number_str + ' ' + ticket_details["summary"]
 
         # Prepare ticket body recipients
         ticket_recipients = '{\"to\":{\"' + str(user_id) + '\":\"<' + user_email + '>\"}}'
@@ -64,7 +64,7 @@ def create_ticket(ticket_details, hostname='spiceworks', database_name='osticket
         dep_value = '{\"' + str(ticket_details["department_id"]) + '\":\"' + ticket_details["department"] + '\"}'
 
         # Prepare search content (CUSTOM FIELD: SPE + DEPARTMENT -> CHANGE/REMOVE)
-        search_content = ticket_details["summary"] + r'\nyes' + ticket_details["spe"] + r'\n' + ticket_details["department"]
+        search_content = ticket_details["summary"] + ' yes ' + ticket_details["spe"] + ' ' + ticket_details["department"]
 
         # Prepare your imported help topic id (CUSTOM FIELD: HELP TOPIC ID -> CHANGE)
         help_topic_id = 18
@@ -152,9 +152,9 @@ def create_ticket(ticket_details, hostname='spiceworks', database_name='osticket
 
             # Insert into ost_thread_event 
             query_thread_event = """INSERT INTO `ost_thread_event` SET `thread_type` = 'T', `staff_id` = %s, 
-            `team_id` = 0, `dept_id` = 1, `topic_id` = %s, `timestamp` = NOW(), `uid_type` = 'S', `uid` = 3, 
+            `team_id` = 0, `dept_id` = 1, `topic_id` = %s, `timestamp` = NOW(), `uid_type` = 'S', `uid` = %s, 
             `username` = %s, `event_id` = 1, `thread_id` = %s"""
-            cursor.execute(query_thread_event, (staff_id, help_topic_id, staff_username, ticket_id))
+            cursor.execute(query_thread_event, (staff_id, help_topic_id, staff_id, staff_username, ticket_id))
 
             # Update ost_ticket (ticket status -> 1 = open)
             query_ticket_status = "UPDATE `ost_ticket` SET `status_id` = '1', `updated` = NOW() WHERE `ost_ticket`.`ticket_id` = %s LIMIT 1"
@@ -178,11 +178,27 @@ def create_ticket(ticket_details, hostname='spiceworks', database_name='osticket
             query_search_thread = "REPLACE INTO ost__search SET object_type='H', object_id=%s, content=%s, title=%s"
             cursor.execute(query_search_thread, (thread_entry_id, ticket_details["description"], ticket_details["summary"]))
 
-            # Update ost_thread_entry (flag)
+            # ------------------------------------- CLOSE TICKET ------------------------------------- 
 
-            # Update ost_ticket (staff_id)
+            # Update ost_ticket (ticket status -> 3 = closed) 
+            query_close_ticket = """UPDATE `ost_ticket` SET `lastupdate` = NOW(), `closed` = %s, `status_id` = 3, 
+            `updated` = NOW() WHERE `ost_ticket`.`ticket_id` = %s LIMIT 1"""
+            cursor.execute(query_close_ticket, (closed_at, ticket_id))
+            
+            # Insert into ost_thread_referral 
+            query_thread_referral = "INSERT INTO `ost_thread_referral` SET `thread_id` = %s, `object_id` = 3, `object_type` = 'S', `created` = NOW()"
+            cursor.execute(query_thread_referral, (ticket_id, ))
+
+            # Update ost_thread_event set to annulled 
+            query_thread_annulled = """UPDATE `ost_thread_event` SET `annulled` = 1 WHERE `ost_thread_event`.`thread_id` = %s 
+            AND `ost_thread_event`.`event_id` = 2"""
+            cursor.execute(query_thread_annulled, (ticket_id, ))
 
             # Insert into ost_thread_event
+            query_final_thread_event = """INSERT INTO `ost_thread_event` SET `thread_type` = 'T', `staff_id` = %s, `dept_id` = 1, 
+            `topic_id` = %s, `timestamp` = NOW(), `uid_type` = 'S', `uid` = %s, `username` = %s, `event_id` = 2, `team_id` = 0,
+            `data` = '{\"status\":[3,\"Closed\"]}', `thread_id` = %s"""
+            cursor.execute(query_final_thread_event, (staff_id, help_topic_id, staff_id, staff_username, ticket_id))
 
             # Commit changes
             connection.commit()
@@ -215,6 +231,6 @@ if __name__ == '__main__':
     result = create_ticket(ticket_details)
 
     if result[0]:
-        print('Ticket was created: {}'.format(result[1]))
+        print('Ticket was created & closed: {}/{}'.format(result[1], ticket_details["id"]))
     else:
         print('Ticket already exists: {}'.format(ticket_details["id"]))
