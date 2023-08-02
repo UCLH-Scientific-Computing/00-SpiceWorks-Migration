@@ -100,3 +100,64 @@ All users are identified by email.
     - The second element is an int representing the ticket_id 
 
 # <span style="color:blue">**Posting an Internal Note**</span>
+
+
+
+
+
+# <span style ="color:blue">**Import from Spiceworks**</span>
+
+## Get info about ticket sender `getSender`
+
+### Inputs
+
+- **`swconn`** a connection to SpiceWorks
+- **`ticket`** the ticket ID (`tickets.id`) *OR* **`user`** the user ID (`ticket.reported_by_id`) **Which one do we want?**
+
+### Outputs
+
+- email (from `users.email`)
+- name (from (`users.first_name` + `users_last.name`)) **This field is only filled out for "real" users (ProUser type) - what do we want to do with email-only users (EndUser type)?**
+- phone number (from `users.office_phone` or `users.cell_phone`) **This field is almost always empty in SW - do we actually want it?**
+
+## Get ticket content `getTicket`
+
+### Inputs
+
+- **`swconn`** a connection to SpiceWorks
+- **`ticket`** the ticket ID (`tickets.id`)
+
+### Outputs
+
+- ticket id (from `tickets.id`) note: this is also one of the inputs! Returned for validation
+- summary (from `tickets.summary`)
+- description (from `tickets.description`) this is **not** currently HTML-ified in any way
+- Time ticket of last
+    - Created (from `tickets.created_at`)
+    - Closed (from `tickets.closed_at`)
+- Created by, but by the email of that user (from `users.email where users.id = tickets.created_by`)
+- Assigned to, but by the email of that user (from `users.email where users.id = tickets.assigned_to`)
+- c_spe (from `tickets.c_spe`)
+- c_department (from `tickets.c_department`)
+
+## Get all ticket comments into one big HTML string
+
+### Inputs
+
+- **`swconn`** a connection to SpiceWorks
+- **`ticket`** the ticket ID (`tickets.id`)
+
+### Outputs
+
+- comment chunk built from `comments` in the following format
+
+        <h3>created_at time created_by person 1 email:</h3> <p>content of body..</p> <hr>
+        <h3>created_at time created_by person 2 email:</h3> <p>content of body..</p> <hr>
+        <p>Find the attachments to this ticket: C:\\Program Files (x86)\\Spiceworks\\data\\uploads\\Ticket\\ticket_id<br /></p>'
+
+  content extracted from
+    - person email: `users.email where users.id = comments.created_by`
+    - timestamp: `comments.created_at`
+    - body: `comments.body` **May need a bit of HTML transform (e.g. `<br>` lines)**
+    - attachments: `C:\\Program Files (x86)\\Spiceworks\\data\\uploads\\Ticket\\`*`ticket_id`*`\\`_`attachment_name`_
+  collated from `comments where comments.ticket_id = tickets.id`
