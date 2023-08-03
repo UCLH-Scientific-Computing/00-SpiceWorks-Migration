@@ -8,6 +8,7 @@ staff_dict.txt
 user_dict.txt
 temp.html
 SWlocation.txt
+staff_id_dict_test.txt
 
 # C extensions
 *.so
