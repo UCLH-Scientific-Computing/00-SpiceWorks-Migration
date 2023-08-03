@@ -4,17 +4,16 @@
 # Date:     31-07-2023
 
 import mysql.connector
+import json
 from connect_to_db import connect_to_mysql, get_creds
 from user_exists import check_user_account_exists
 
-def create_user_if_not_exists(email, name = '', phone = '', hostname='spiceworks', database='osticket_test'):
+def create_user_if_not_exists(user_details, hostname='spiceworks', database='osticket_test'):
     """
     Creates a user if one does not already exist in the database.
 
     :param
-        email (str): The email address to check.
-        name (str): The name of the user (if exists, otherwise '').
-        phone (str): The phone number of user (if exists, otherwise '').
+        user_details (dict): A dictionary containing user details pertaining to osticket db.
         hostname (str, optional): The hostname of the database. Default is 'spiceworks'.
         database_name (str, optional): The name of the database. Default is 'osticket_test'.
        
@@ -27,6 +26,11 @@ def create_user_if_not_exists(email, name = '', phone = '', hostname='spiceworks
         mysql.connector.Error: If an error occurs will connecting to the database or performing query.
     """
     try:
+        # Set email/name/phone variables
+        email = user_details["email"]
+        name = user_details["name"]
+        phone = user_details["phone"]
+
         # Get user credentials 
         username, password = get_creds('db_creds.txt')
 
@@ -97,11 +101,12 @@ def create_user_if_not_exists(email, name = '', phone = '', hostname='spiceworks
 
 if __name__ == '__main__':
 
-    email = 'random123@nhs.net'
-    name = 'buddy'
-    phone = '1234567890'
+    user_details_file_path = 'user_details.txt'
 
-    if create_user_if_not_exists(email, name, phone)[0]:
-        print('User {} was created'.format(email))
+    with open(user_details_file_path, 'r') as file:
+        user_details = json.load(file)
+
+    if create_user_if_not_exists(user_details)[0]:
+        print('User {} was created'.format(user_details["email"]))
     else:
-        print('User {} already exists'.format(email))
+        print('User {} already exists'.format(user_details["email"]))

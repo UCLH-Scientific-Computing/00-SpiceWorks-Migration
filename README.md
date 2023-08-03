@@ -31,9 +31,10 @@ Before running, make sure to customize the following items for your own OsTicket
 - If your osTicket instance has custom fields, adjust the **`ticket_details`** dictionary in the **`create_ticket`** function to include the appropriate custom fields and their corresponding values and you'll need to add your own SQL insert calls
 - Save columns **`id`** and **`value`** from **`ost_list_items`** table as a dictionary {id:value}
 
-### To-Do tomorrow: 
-1. finish in create_ticket 
-2. test create_ticket 
+### To-Do: 
+<del>1. finish in create_ticket </del>
+
+<del>2. test create_ticket </del>
 
  To-Do Thursday:
  1. create import bot staff user to post all replies/comments 
