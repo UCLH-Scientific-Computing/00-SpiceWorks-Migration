@@ -7,14 +7,14 @@ Created on Wed Jul 26 17:49:46 2023
 
 from get_spiceworks import get_spiceworks
 
-def get_user(id):
+def get_user(email):
     """
-    Retrieves user information given the user id
+    Retrieves user information given the user email
 
     Parameters
     ----------
-    id : int
-        The user id.
+    email : str
+        The user email.
 
     Returns
     -------
@@ -28,8 +28,8 @@ def get_user(id):
     """
     con = get_spiceworks()
     cursor = con.cursor()
-    query = 'SELECT id, email, TRIM(first_name || " " || last_name), TRIM(office_phone || " " || cell_phone) FROM users WHERE id = :id'
-    cursor.execute(query, {'id': id})
+    query = 'SELECT id, email, TRIM(first_name || " " || last_name), TRIM(office_phone || " " || cell_phone) FROM users WHERE email = :email'
+    cursor.execute(query, {'email': email})
     result = cursor.fetchone()
     con.close()
     if result is None:
