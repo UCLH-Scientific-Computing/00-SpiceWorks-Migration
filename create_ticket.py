@@ -54,7 +54,7 @@ def create_ticket(ticket_details, hostname='spiceworks', database_name='osticket
         created_at = datetime.strptime(ticket_details["created_at"], '%Y-%m-%d %H:%M:%S')
 
         # Prepare created_at in correct format
-        closed_at = datetime.strptime(ticket_details["closed_at"], '%Y-%m-%d %H:%M:%S')
+        closed_at = "{datetime.strptime(ticket_details['closed_at'], '%Y-%m-%d %H:%M:%S')}" if ticket_details["closed_at"] is not None else "NOW()"
 
         # Prepare spe form_entry_values value (CUSTOM FIELD: SYSTEM -> CHANGE/REMOVE)
         spe_value = '{\"' + str(ticket_details["spe_id"]) + '\":\"' + ticket_details["spe"] + '\"}'
@@ -182,9 +182,9 @@ def create_ticket(ticket_details, hostname='spiceworks', database_name='osticket
             # ------------------------------------------ CLOSE TICKET ------------------------------------------ 
 
             # Update ost_ticket (ticket status -> 3 = closed) 
-            query_close_ticket = """UPDATE `ost_ticket` SET `lastupdate` = NOW(), `closed` = %s, `status_id` = 3, 
-            `updated` = NOW() WHERE `ost_ticket`.`ticket_id` = %s LIMIT 1"""
-            cursor.execute(query_close_ticket, (closed_at, ticket_id))
+            query_close_ticket = """UPDATE `ost_ticket` SET `lastupdate` = NOW(), `closed` = {}, `status_id` = 3, 
+            `updated` = NOW() WHERE `ost_ticket`.`ticket_id` = %s LIMIT 1""".format(closed_at)
+            cursor.execute(query_close_ticket, (ticket_id, ))
             
             # Insert into ost_thread_referral 
             query_thread_referral = "INSERT INTO `ost_thread_referral` SET `thread_id` = %s, `object_id` = 3, `object_type` = 'S', `created` = NOW()"

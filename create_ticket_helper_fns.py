@@ -36,7 +36,7 @@ def ticket_exists(connection, ticket_number_str):
         # Fetch the result 
         result = cursor.fetchone()
 
-        if result[0] is not None:
+        if result is not None:
             # Close the cursor
             cursor.close()
             return True, result[0]
