@@ -225,7 +225,7 @@ if __name__ == '__main__':
     with open(test_ticket_file_path, 'r') as file:
         ticket_details = json.load(file)
 
-    user_details_file_path = 'dictionaries\user_details.txt'
+    user_details_file_path = r'dictionaries\user_details.txt'
 
     with open(user_details_file_path, 'r') as file:
         user_details = json.load(file)

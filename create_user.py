@@ -28,8 +28,8 @@ def create_user_if_not_exists(user_details, hostname='spiceworks', database='ost
     try:
         # Set email/name/phone variables
         email = user_details["email"]
-        name = user_details["name"]
-        phone = user_details["phone"]
+        name = email if user_details["name"] is None else user_details["name"]
+        phone = '' if user_details["phone"] is None else user_details["phone"] 
 
         # Get user credentials 
         username, password = get_creds()
