@@ -101,7 +101,7 @@ def create_user_if_not_exists(user_details, hostname='spiceworks', database='ost
 
 if __name__ == '__main__':
 
-    user_details_file_path = 'dictionaries\user_details.txt'
+    user_details_file_path = r'dictionaries\user_details.txt'
 
     with open(user_details_file_path, 'r') as file:
         user_details = json.load(file)
