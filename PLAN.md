@@ -50,9 +50,15 @@ All users are identified by email.
 
 ### Inputs
 
-- **`email`** (str): The email address to check.
-- **`name`** (str): The name of the user (if exists, otherwise '').
-- **`phone`** (str): The phone number of user (if exists, otherwise '').
+- **`user_details`** (dict): A dictionary of {str:str and int} of user details in json format:
+  - id (str): spiceworks id (int)
+  - email (str): the user email to check/create (str)
+  - name (str): the name of user (if exists, otherwise '') (str)
+  - phone (str): the phone number of user (if exists, otherwise ''). (str)
+  - body_html (str): body of comment with any html formatting as desired (str, with single ticks '')
+- `**hostname**` (str, optional): The hostname of the database. Default is 'spiceworks'.
+- `**database**` (str, optional): The name of the database. Default is 'osticket_test'.
+
 
 ### Outputs
 
@@ -77,8 +83,22 @@ All users are identified by email.
 
 ### Inputs
 
-- **`ticket_details`** (dict): Dictionary of {str: str} of ticket info.
-- **`database`**  (str): The name of the database to connect to 
+- **`ticket_details`** (dict): A dictionary of {str:str and int} of ticket details in json format:
+  - id (str): spiceworks id (int)
+  - summary (str): summary/title/brief of ticket (str)
+  - description (str): body of main ticket with html formatting if preferred (may need to use '' & a different read in format if reading from txt file - json doesn't like backslashes) (str)
+  - created_at (str): date in `%Y-%m-%d %H:%M:%S` format (str)
+  - closed_at (str):  date in `%Y-%m-%d %H:%M:%S` format (str)
+  - created_by (str): osTicket user ID, see ost_user (int)
+  - created_by_email (str): email of user (str)
+  - assigned_to (str): osTicket staff ID, see ost_staff (int)
+  - assigned_to_username (str): osTicket staff username, see ost_staff (str)
+  - spe (str): custom field value, see ost_list_items (str) (REMOVE/CHANGE)
+  - spe_id (str): custom field id, see ost_list_items (str) (REMOVE/CHANGE)
+  - department (str): custom field value, see ost_list_items (str) (REMOVE/CHANGE)
+  - department_id (str): custom field id, see ost_list_items (str) (REMOVE/CHANGE)
+- **`hostname`** (str, optional): The hostname of the database. Default is 'spiceworks'.
+- **`database`** (str, optional): The name of the database. Default is 'osticket_test'.
 
 ### Outputs
 
@@ -88,7 +108,25 @@ All users are identified by email.
 
 # <span style="color:blue">**Posting an Internal Note**</span>
 
+## Create a Comment `create_comment`
 
+### Inputs
+
+- **`comment_details`** (dict): A dictionary of {str:str and int} of comment details:
+  - ticket_id (str): osTicket ticket id (int)
+  - staff_id (str): osTicket staff id (int)
+  - staff_name (str): osTicket staff name (str)
+  - title (str): preferred comment title (str)
+  - body_html (str): body of comment with any html formatting as desired (str, with single ticks '')
+- **`hostname`** (str, optional): The hostname of the database. Default is 'spiceworks'.
+- **`ticket_number_str`** (str, optional): The name of the database. Default is 'osticket_test'.
+
+### Outputs
+
+- **`tuple`**: A tuple containing two elements:
+    - The first element is a bool, True if the comment was created.
+    - The second element is an int representing the thread_entry_id 
+                (can check if exists in ost_thread_entry table)
 
 
 

@@ -45,3 +45,31 @@ def ticket_exists(connection, ticket_number_str):
 
         # Handle the error
         raise error
+    
+def check_key_in_json_file(key, file_path):
+    """
+    Checks if a key is present in a JSON-like text file and if so, returns the value at that key.
+
+    :param
+        key (str): The key to check in the JSON data.
+        file_path (str): The path to the JSON-like text file.
+
+    :return
+        tuple: A tuple containing two elements:
+            - The first element is a bool, True if the key is present, False otherwise.
+            - The second element is the value associated with the key, or None if the key is not present.
+
+    :raises
+        FileNoteFoundError: If the specified file does not exist. 
+    """
+    try: 
+        with open(file_path, 'r') as file:
+            data = file.read()
+            json_data = json.loads(data)
+            if key in json_data:
+                return True, json_data[key]
+            else:
+                return False, None 
+    except json.JSONDecodeError as error:
+        raise error
+

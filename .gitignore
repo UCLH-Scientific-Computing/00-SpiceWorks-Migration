@@ -3,12 +3,15 @@ __pycache__/
 *.py[cod]
 *$py.class
 db_creds.txt
-ost_list_items_dict.txt
+sw_spe_to_os_spe.txt
+sw_spe_to_os_spe_id.txt
+sw_dep_to_os_dep.txt
+sw_dep_to_os_dep_id.txt
 staff_dict.txt
-user_dict.txt
+staff_email_to_id.txt
 temp.html
 SWlocation.txt
-staff_id_dict_test.txt
+staff_email_to_un.txt
 
 # C extensions
 *.so

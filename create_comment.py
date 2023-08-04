@@ -97,7 +97,7 @@ if __name__ == '__main__':
         comment_details = eval(dict_text)
         result = create_comment(comment_details)
         if result[0]:
-            print('\Comment was created! \n \U0001f984 Ticket ID: {}\n \U0001f984 Thread ID: {}\n'.format(comment_details["ticket_id"], result[1]))
+            print('Comment was created! \n \U0001f984 Ticket ID: {}\n \U0001f984 Thread ID: {}\n'.format(comment_details["ticket_id"], result[1]))
         else:
             print('\nUnable to make comment! \n \U0001f984 Ticket ID: {}\n'.format(comment_details["ticket_id"]))
     else: 
