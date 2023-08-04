@@ -27,7 +27,7 @@ def get_comments(id):
     """
     con = get_spiceworks()
     cursor = con.cursor()
-    query = 'SELECT comments.id, ticket_id, comments.body, comments.created_at, users.email, attachment_name FROM comments JOIN users on comments.created_by = users.id WHERE ticket_id = :id ORDER BY comments.id DESC'
+    query = 'SELECT comments.id, ticket_id, comments.body, comments.created_at, users.email, attachment_name FROM comments LEFT JOIN users on comments.created_by = users.id WHERE ticket_id = :id ORDER BY comments.id DESC'
     result = cursor.execute(query, {'id': id})
     comments = [ make_html_comment(row) for row in result.fetchall() ]
     con.close()

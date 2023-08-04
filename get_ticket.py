@@ -6,6 +6,7 @@ Created on Wed Jul 26 17:49:46 2023
 """
 
 from get_spiceworks import get_spiceworks
+from re import sub
 
 def get_ticket(id):
     """
@@ -33,9 +34,10 @@ def get_ticket(id):
     """
     con = get_spiceworks()
     cursor = con.cursor()
-    query = 'SELECT tickets.id, summary, description, tickets.created_at, closed_at, creator.email, staff.email, c_spe, c_department FROM tickets JOIN users creator ON tickets.created_by = creator.id JOIN users staff ON tickets.assigned_to = staff.id WHERE tickets.id = :id'
+    query = 'SELECT tickets.id, summary, description, tickets.created_at, closed_at, creator.email, staff.email, c_spe, c_department FROM tickets LEFT JOIN users creator ON tickets.created_by = creator.id LEFT JOIN users staff ON tickets.assigned_to = staff.id WHERE tickets.id = :id'
     cursor.execute(query, {'id': id})
-    result = cursor.fetchone()
+    result = list(cursor.fetchone())
+    result[2] = sub(r'(\r)?\n', r'<br>', result[2])
     con.close()
     if result is None:
         return {}

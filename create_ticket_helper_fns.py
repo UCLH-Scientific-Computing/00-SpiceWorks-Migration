@@ -6,6 +6,7 @@
 import mysql.connector
 import json
 from datetime import datetime 
+import re
 from connect_to_db import connect_to_mysql, get_creds
 from create_user import create_user_if_not_exists
 
@@ -80,3 +81,28 @@ def check_key_in_json_file(key, file_path):
     except json.JSONDecodeError as error:
         raise error
 
+def get_rid_of_all_fun(expression):
+    half_fun = re.sub(r'\\U[a-fA-F0-9]{8}', '', expression)
+    quarter_fun = re.sub(r'\\x[a-fA-F0-9]{2}', '', half_fun)
+    no_fun = re.sub(r'U\+[a-fA-F0-9]{4}', '', quarter_fun)
+    return no_fun
+
+if __name__ == '__main__':
+     
+    ticket_details = "User already exists! \U0001F480"
+
+    print(ticket_details)
+
+    raw_ticket_details = r'%s' %ticket_details
+    #r"{}".format(ticket_details)
+
+    print(raw_ticket_details)
+
+    #exp = r"User already exists! \U0001F480"
+    print(raw_ticket_details)
+    print(get_rid_of_all_fun(raw_ticket_details))
+    exp = r'User already exists! \xF0\x9F\x98\x8A' 
+    print(exp)
+    print(get_rid_of_all_fun(exp))
+    exp = 'User already exists! U+1F60B' 
+    print(get_rid_of_all_fun(exp))

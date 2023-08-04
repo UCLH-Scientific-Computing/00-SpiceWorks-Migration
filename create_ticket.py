@@ -6,6 +6,7 @@
 import mysql.connector
 import json
 from datetime import datetime 
+from re import sub
 from connect_to_db import connect_to_mysql, get_creds
 from create_ticket_helper_fns import ticket_exists 
 
@@ -54,7 +55,13 @@ def create_ticket(ticket_details, hostname='spiceworks', database_name='osticket
         created_at = datetime.strptime(ticket_details["created_at"], '%Y-%m-%d %H:%M:%S')
 
         # Prepare created_at in correct format
-        closed_at = "{datetime.strptime(ticket_details['closed_at'], '%Y-%m-%d %H:%M:%S')}" if ticket_details["closed_at"] is not None else "NOW()"
+        if ticket_details["closed_at"] is None:
+            closed_at = "NOW()"
+        else:
+            closed_at = "'{}'".format(datetime.strptime(ticket_details['closed_at'], '%Y-%m-%d %H:%M:%S')) 
+
+        # Prepare ticket body to remove any UNICODE (NEED TO REMOVE UNICODE)
+        ticket_body = r"{0}".format(ticket_details['description'])
 
         # Prepare spe form_entry_values value (CUSTOM FIELD: SYSTEM -> CHANGE/REMOVE)
         spe_value = '{\"' + str(ticket_details["spe_id"]) + '\":\"' + ticket_details["spe"] + '\"}'
@@ -170,14 +177,14 @@ def create_ticket(ticket_details, hostname='spiceworks', database_name='osticket
             `format` = 'html', `user_id` = %s, `poster` = %s, `source` = 'Other', `flags` = 577, 
             `recipients` = %s, `ip_address` = '8.8.8.8', 
             `body` = %s, `updated` = NOW()"""
-            cursor.execute(query_ticket_body, (ticket_id, user_id, user_email, ticket_recipients, ticket_details["description"]))
+            cursor.execute(query_ticket_body, (ticket_id, user_id, user_email, ticket_recipients, ticket_body))
 
             # Get thread ID 
             thread_entry_id = cursor.lastrowid 
 
             # Replace into ost__search (thready entry)
             query_search_thread = "REPLACE INTO ost__search SET object_type='H', object_id=%s, content=%s, title=%s"
-            cursor.execute(query_search_thread, (thread_entry_id, ticket_details["description"], ticket_details["summary"]))
+            cursor.execute(query_search_thread, (thread_entry_id, ticket_body, ticket_details["summary"]))
 
             # ------------------------------------------ CLOSE TICKET ------------------------------------------ 
 
