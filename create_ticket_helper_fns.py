@@ -3,12 +3,10 @@
 # Author:   Sierra Bonilla
 # Date:     01-08-2023
 
-import mysql.connector
+# import mysql.connector
 import json
-from datetime import datetime 
+
 import re
-from connect_to_db import connect_to_mysql, get_creds
-from create_user import create_user_if_not_exists
 
 def ticket_exists(connection, ticket_number_str):
     """
@@ -82,10 +80,12 @@ def check_key_in_json_file(key, file_path):
         raise error
 
 def get_rid_of_all_fun(expression):
-    half_fun = re.sub(r'\\U[a-fA-F0-9]{8}', '', expression)
-    quarter_fun = re.sub(r'\\x[a-fA-F0-9]{2}', '', half_fun)
-    no_fun = re.sub(r'U\+[a-fA-F0-9]{4}', '', quarter_fun)
-    return no_fun
+    # from https://stackoverflow.com/a/50752058/17732851
+    return ''.join(char for char in expression if ord(char) < 0x10000)
+    # half_fun = re.sub(r'\\U[a-fA-F0-9]{8}', '', expression)
+    # quarter_fun = re.sub(r'\\x[a-fA-F0-9]{2}', '', half_fun)
+    # no_fun = re.sub(r'U\+[a-fA-F0-9]{4}', '', quarter_fun)
+    # return no_fun
 
 if __name__ == '__main__':
      
