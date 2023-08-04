@@ -31,7 +31,7 @@ def make_html_comment(row) :
         body text, and the name of the attachment, if any.
 
     """
-    body = '<h3><code>%s</code> on %s:</h3><p>%s</p>' % (row[4], row[3], row[2])
+    body = '<p><code>%s</code> on %s:</p><blockquote>%s</blockquote>' % (row[4], row[3], row[2])
     if row[5] is not None:
         body += '<p>'
         if row[2] != 'Attachment:':
