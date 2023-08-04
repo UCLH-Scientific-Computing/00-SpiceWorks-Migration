@@ -31,4 +31,4 @@ def get_comments(id):
     result = cursor.execute(query, {'id': id})
     comments = [ make_html_comment(row) for row in result.fetchall() ]
     con.close()
-    return {'id' : id, 'body' : '<h2>From Spiceworks</h2>%s<hr>Attachments folder: <code>Tickets/%s</code>' % ('<hr>'.join(comments), id) }
+    return {'id' : id, 'body' : '<h2>From Spiceworks</h2>%s<hr>Attachments folder: <code>\\\\spiceworks\\Ticket\\%s</code>' % ('<hr>'.join(comments), id) }

@@ -32,7 +32,7 @@ def create_user_if_not_exists(user_details, hostname='spiceworks', database='ost
         phone = user_details["phone"]
 
         # Get user credentials 
-        username, password = get_creds('db_creds.txt')
+        username, password = get_creds()
 
         # Check if user account already exists, if user exists return false and the user_id
         exists = check_user_account_exists(email, username, password, hostname=hostname,database=database)
@@ -101,7 +101,7 @@ def create_user_if_not_exists(user_details, hostname='spiceworks', database='ost
 
 if __name__ == '__main__':
 
-    user_details_file_path = 'user_details.txt'
+    user_details_file_path = 'dictionaries\user_details.txt'
 
     with open(user_details_file_path, 'r') as file:
         user_details = json.load(file)

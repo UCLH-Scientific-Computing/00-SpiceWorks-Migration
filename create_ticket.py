@@ -71,7 +71,7 @@ def create_ticket(ticket_details, hostname='spiceworks', database_name='osticket
         # -------------------------------------- CONNECT TO DATABASE -------------------------------------- 
 
         # Get user credentials 
-        username, password = get_creds('db_creds.txt')        
+        username, password = get_creds()        
 
         # Connect to the MySQL database; Change spiceworks to host server
         connection = connect_to_mysql(hostname, username, password, database_name)
@@ -220,12 +220,12 @@ def create_ticket(ticket_details, hostname='spiceworks', database_name='osticket
 
 if __name__ == '__main__':
 
-    test_ticket_file_path = 'ticket_details.txt'
+    test_ticket_file_path = r'dictionaries\ticket_details.txt'
 
     with open(test_ticket_file_path, 'r') as file:
         ticket_details = json.load(file)
 
-    user_details_file_path = 'user_details.txt'
+    user_details_file_path = 'dictionaries\user_details.txt'
 
     with open(user_details_file_path, 'r') as file:
         user_details = json.load(file)

@@ -39,14 +39,15 @@ def connect_to_mysql(host, username, password, database):
 
         raise error
 
-def get_creds(text_file_path):
+def get_creds(text_file_path='dictionaries\db_creds.txt'):
     """
     Reads credential text file and returns username and password, if text file contains creds.
     text file should be a dictionary like:
         {'username':'password'}
 
     :param
-        text_file_path (str): The file path to a text file with credentials to MySQL database
+        text_file_path (str): The file path to a text file with credentials to MySQL database.
+            Default is 'dictionaries\db_creds.txt'
 
     :return
         tuple: A tuple containing two elements:
@@ -72,7 +73,7 @@ def get_creds(text_file_path):
 
 if __name__ == '__main__':
 
-    username, password = get_creds('db_creds.txt')
+    username, password = get_creds('dictionaries\db_creds.txt')
 
     host = 'spiceworks'
     database = 'osticket_test'

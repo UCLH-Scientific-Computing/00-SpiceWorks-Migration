@@ -56,7 +56,7 @@ def check_user_account_exists(email, username, password, hostname='spiceworks', 
     
 if __name__ == '__main__':
 
-    username, password = get_creds('db_creds.txt')
+    username, password = get_creds()
 
     email = 'random.person@nhs.net'
     database = 'osticket_test'

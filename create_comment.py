@@ -41,7 +41,7 @@ def create_comment(comment_details, hostname='spiceworks', database_name='ostick
         # -------------------------------------- CONNECT TO DATABASE -------------------------------------- 
 
         # Get user credentials 
-        username, password = get_creds('db_creds.txt')        
+        username, password = get_creds()        
 
         # Connect to the MySQL database; Change spiceworks to host server
         connection = connect_to_mysql(hostname, username, password, database_name)
@@ -85,7 +85,7 @@ def create_comment(comment_details, hostname='spiceworks', database_name='ostick
     
 if __name__ == '__main__':
 
-    comment_details_file_path = 'comment_details.txt'
+    comment_details_file_path = 'dictionaries\comment_details.txt'
 
     with open(comment_details_file_path, 'r') as file:
         comment_data = file.read()
