@@ -18,7 +18,9 @@ def ticket_exists(connection, ticket_number_str):
         ticket_number_str (str): The ticket number in the format of '001234'.
         
     :return
-        bool: True if ticket exists, False if the ticket doesn't exist.
+         tuple: A tuple containing two elements:
+            - The first element is a bool, True if the ticket exists, False otherwise.
+            - The second element is the ticket_id if the ticket exists, or None if it doesn't.
 
     :raises
         mysql.connector.Error: If an error occurs while executing the query.
@@ -28,18 +30,23 @@ def ticket_exists(connection, ticket_number_str):
         cursor = connection.cursor()
         
         # Select from ost_ticket
-        select_query = "SELECT * FROM ost_ticket WHERE number=%s"
+        select_query = "SELECT ticket_id FROM ost_ticket WHERE number=%s"
         cursor.execute(select_query, (ticket_number_str, ))
 
         # Fetch the result 
         result = cursor.fetchone()
 
-        # Close the cursor
-        cursor.close()
-
-        return (result is not None)
+        if result[0] is not None:
+            # Close the cursor
+            cursor.close()
+            return True, result[0]
+        else:
+            # Close the cursor
+            cursor.close()
+            return False, None
     
     except mysql.connector.Error as error:
+
         # Rollback transaction in case of error
         connection.rollback()
 

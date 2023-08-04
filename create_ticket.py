@@ -77,11 +77,12 @@ def create_ticket(ticket_details, hostname='spiceworks', database_name='osticket
         connection = connect_to_mysql(hostname, username, password, database_name)
 
         # if this ticket already exists, skip
-        if ticket_exists(connection, ticket_number_str):
+        ticket_exists_result = ticket_exists(connection, ticket_number_str)
+        if ticket_exists_result[0]:
             # Close the connection 
             connection.close()
 
-            return (False, None)
+            return (False, ticket_exists_result[1])
         
         # ----------------------------------------- CREATE TICKET ----------------------------------------- 
         else:
