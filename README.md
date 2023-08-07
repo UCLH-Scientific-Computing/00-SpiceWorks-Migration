@@ -20,16 +20,20 @@ You can install the required packages using pip:
 
 ## Usage
 
+The **`process_tickets`** function in `main.py` shows an example of how to use the functions created below. Also, workflow explained step by step in `MIGRATION_NOTEBOOK.PY`.
+
 ### Customization
 
-This migration method requires a descent amount of customization of these scripts (your custom fields will obviously be different): 
+This migration method requires a descent amount of customization of the following scripts (your custom fields will obviously be different), so familiarity with both export & import databases is definitely required: 
 - Update MySQL database credentials in example_creds.txt and rename file db_creds.txt (note: this requires that the pc that you are connecting to the database has been granted priveleges to remote connect e.g. `GRANT ALL PRIVILEGES ON *.* TO 'migrator_username'@'%' IDENTIFIED BY 'password';`)
-- Modify the **`hostname`** and **`database_name`** parameters in **`process_tickets`** function global variables to match your osTicket database configuration 
-- Create an Import Agent for creating tickets and posting replies and change these values in global variables **`process_tickets`**
-- In **`create_ticket`** function on first insert into ost_ticket, change value 18 to preferred imported help topic found in **`ost_help_topic table`** (**CHANGE 18 -> YOUR IMPORTED HELP TOPIC ID**)
-- **REMOVE LAST 4 FIELDS IN** **`ticket_details`** **DICT AND INSERT STATEMENTS IN** **`create_ticket`** **WITH CHANGE/REMOVE OR FUNCTION WILL NOT WORK**
-- If your osTicket instance has custom fields, adjust the **`ticket_details`** dictionary in the **`create_ticket`** function to include the appropriate custom fields and their corresponding values and you'll need to add your own SQL insert calls
-- Save columns **`id`** and **`value`** from **`ost_list_items`** table as a dictionary {id:value}
+- Create SWlocation.txt file with file path to spiceworks database location 
+- Modify the **`hostname`** and **`database_name`** parameters in function calls to match your osTicket database configuration 
+- Create an Import Agent for creating tickets and posting replies 
+- In **`create_ticket`** function:
+   - change help topic value to preferred imported help topic found in **`ost_help_topic table`** (**CHANGE 18 -> YOUR IMPORTED HELP TOPIC ID**)
+   - adjust the **`ticket_details`** dictionary passed to **`create_ticket`** function to include the appropriate custom fields and their corresponding values
+   - **REMOVE LAST 4 FIELDS IN** **`ticket_details`** **DICT AND INSERT STATEMENTS IN** **`create_ticket`** **WITH CHANGE/REMOVE OR FUNCTION WILL NOT WORK**
+- Save columns **`id`** and **`value`** from **`ost_list_items`** table dictionaries {value: id}, save mapped dictionaries for {**`value_from_old_ticket_software`**: **`value_in_os_ticket_software`**}
 
 # <span style ="color:blue">**Spiceworks: Export**</span>
 
@@ -309,11 +313,7 @@ Within file `create_ticket_helper_fns` & `create_ticket.py`
 
 
 
-### Example Comment 
+### Example Comment Format
 ![Example Comment](imgs/ExampleComment.png)
- 
- 2. finish proper Documentation
-    - Plan
-    - Read Me 
-    - Process_Ticket() documentation 
+
 
