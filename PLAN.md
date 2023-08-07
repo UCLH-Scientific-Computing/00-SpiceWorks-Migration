@@ -1,5 +1,7 @@
 # <span style ="color:blue">**General Functions**</span>
 
+Within file `create_ticket_helpers_fns.py`
+
 ## Get credentials to database `get_creds`
 
 ### Inputs
@@ -25,10 +27,39 @@
 
 - **`mysql.connector.connection.MySQLConnection`**: The MySQL connection object 
 
+## Find value in dictionary `check_key_in_json_file`
+
+### Inputs
+
+- **`key`** (str): The key that needs to be checked within the JSON data
+- **`file_path`** (str): The file path to the JSON-like text file
+
+### Outputs
+
+- **`tuple`**: A tuple containing two elements:
+    - The first element is a bool, `True` if the provided key is found in the JSON data, `False` otherwise.
+    - The second element is the value associated with the provided key if it's present, or `None` if the key is not found.
+
+### Raises
+
+- **`FileNotFoundError`** (str): This exception is raised if the specified file path does not lead to an existing file
+
+## Get rid of emojis 😿 `get_rid_of_all_fun`
+
+### Inputs
+
+- **`expression`** (str): The input string from which non-ASCII characters need to be removed.
+
+### Outputs
+
+- A new string where non-ASCII characters have been removed, while punctuation is retained.
+
 
 # <span style="color:blue">**Create a User**</span>
 
-## Check if user exists already `check_user_account_exists`
+Within file `user_exists.py` & `create_user.py`
+
+## Check if user exists  `check_user_account_exists`
 
 All users are identified by email.
 
@@ -37,7 +68,8 @@ All users are identified by email.
 - **`email`** (str): The email address to check.
 - **`username`** (str): The username to authenticate with the MySQL server
 - **`password`** (str): The password to authenticate with the MySQL server
-- **`database`**  (str): The name of the database to connect to 
+- **`hostname`** (str, optional): The hostname of the database. Default is 'spiceworks'.
+- **`database`** (str, optional): The name of the database. Default is 'osticket_test'.
 
 ### Outputs
 
@@ -46,18 +78,21 @@ All users are identified by email.
     - The second element is an int representing the user_id if the user exists,
         or None if the user does not exist.results tuple(bool, int): True if a user with given email exists along with user_id, False otherwise.
 
-## Create a user, if user doesn't exist `create_user_if_not_exists`
+### Raises
+
+- **`mysql.connector.Error`** (str): If an error occurs with connecting to the database or performing query. 
+
+## Create user, if user doesn't exist `create_user_if_not_exists`
 
 ### Inputs
 
-- **`user_details`** (dict): A dictionary of {str:str and int} of user details in json format:
+- **`user_details`** (dict): A dictionary of {str:str/int} of user details in json format:
   - id (str): spiceworks id (int)
   - email (str): the user email to check/create (str)
   - name (str): the name of user (if exists, otherwise '') (str)
   - phone (str): the phone number of user (if exists, otherwise ''). (str)
-  - body_html (str): body of comment with any html formatting as desired (str, with single ticks '')
-- `**hostname**` (str, optional): The hostname of the database. Default is 'spiceworks'.
-- `**database**` (str, optional): The name of the database. Default is 'osticket_test'.
+- **`hostname`** (str, optional): The hostname of the database. Default is 'spiceworks'.
+- **`database`** (str, optional): The name of the database. Default is 'osticket_test'.
 
 
 ### Outputs
@@ -66,7 +101,13 @@ All users are identified by email.
     - The first element is a bool, True if the user was created, False if the user already existed.
     - The second element is an int representing the user_id 
 
+### Raises
+
+- **`mysql.connector.Error`** (str): If an error occurs with connecting to the database or performing query. 
+
 # <span style="color:blue">**Create a Ticket**</span>
+
+Within file `create_ticket_helper_fns` & `create_ticket.py`
 
 ## Check if a ticket exists `ticket_exists`
 
@@ -77,7 +118,13 @@ All users are identified by email.
 
 ### Outputs
 
-- **`bool`**: True if ticket exists, False if the ticket doesn't exist.
+- **`tuple`**: A tuple containing two elements:
+    - The first element is a bool, True if the ticket exists, False otherwise.
+    - The second element is an int representing the ticket_id if the ticket exists, or None if it doesn't. 
+
+### Raises
+
+- **`mysql.connector.Error`** (str): If an error occurs with connecting to the database or performing query. 
 
 ## Create a ticket `create_ticket`
 
@@ -93,10 +140,10 @@ All users are identified by email.
   - created_by_email (str): email of user (str)
   - assigned_to (str): osTicket staff ID, see ost_staff (int)
   - assigned_to_username (str): osTicket staff username, see ost_staff (str)
-  - spe (str): custom field value, see ost_list_items (str) (REMOVE/CHANGE)
-  - spe_id (str): custom field id, see ost_list_items (str) (REMOVE/CHANGE)
-  - department (str): custom field value, see ost_list_items (str) (REMOVE/CHANGE)
-  - department_id (str): custom field id, see ost_list_items (str) (REMOVE/CHANGE)
+  - spe (str): custom field value, see ost_list_items (str) **(REMOVE/CHANGE)**
+  - spe_id (str): custom field id, see ost_list_items (str) **(REMOVE/CHANGE)**
+  - department (str): custom field value, see ost_list_items (str) **(REMOVE/CHANGE)**
+  - department_id (str): custom field id, see ost_list_items (str) **(REMOVE/CHANGE)**
 - **`hostname`** (str, optional): The hostname of the database. Default is 'spiceworks'.
 - **`database`** (str, optional): The name of the database. Default is 'osticket_test'.
 
@@ -105,6 +152,10 @@ All users are identified by email.
 - **`tuple`**: A tuple containing two elements:
     - The first element is a bool, True if the ticket was created, False if the ticket number already existed.
     - The second element is an int representing the ticket_id 
+
+### Raises
+
+- **`mysql.connector.Error`** (str): If an error occurs with connecting to the database or performing query. 
 
 # <span style="color:blue">**Posting an Internal Note**</span>
 
@@ -128,7 +179,9 @@ All users are identified by email.
     - The second element is an int representing the thread_entry_id 
                 (can check if exists in ost_thread_entry table)
 
+### Raises
 
+- **`mysql.connector.Error`** (str): If an error occurs with connecting to the database or performing query. 
 
 # <span style ="color:blue">**Import from Spiceworks**</span>
 

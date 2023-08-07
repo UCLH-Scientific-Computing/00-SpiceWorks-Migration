@@ -5,7 +5,6 @@
 
 import mysql.connector
 import re
-import ast 
 from connect_to_db import get_creds, connect_to_mysql
 
 def create_comment(comment_details, hostname='spiceworks', database_name='osticket_test'):
@@ -95,7 +94,7 @@ if __name__ == '__main__':
     if match:
         dict_text = match.group()
         comment_details = eval(dict_text)
-        result = create_comment(comment_details)
+        result = create_comment(comment_details, database_name="osticket-clone")
         if result[0]:
             print('Comment was created! \n \U0001f984 Ticket ID: {}\n \U0001f984 Thread ID: {}\n'.format(comment_details["ticket_id"], result[1]))
         else:

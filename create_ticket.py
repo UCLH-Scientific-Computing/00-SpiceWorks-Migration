@@ -59,7 +59,7 @@ def create_ticket(ticket_details, hostname='spiceworks', database_name='osticket
         else:
             closed_at = "'{}'".format(datetime.strptime(ticket_details['closed_at'], '%Y-%m-%d %H:%M:%S')) 
 
-        # Prepare ticket body to remove any UNICODE (NEED TO REMOVE UNICODE)
+        # Prepare ticket body to remove any UNICODE 
         ticket_body = r"{0}".format(ticket_details['description'])
 
         # Prepare spe form_entry_values value (CUSTOM FIELD: SYSTEM -> CHANGE/REMOVE)
