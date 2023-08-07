@@ -17,13 +17,35 @@ import random
 
 def process_tickets(batch_size=100, save_filename='remaining_tickets.txt'):
     """
+    Process and import tickets from Spiceworks 7.5.00107 to OsTicket v1.18 database migration.
+
+    This function processes and imports a list of tickets from Spicework to OsTicket. It takes the provided
+    list of tickets, processes them in batches, and marks the successfully imported tickets. The remaining tickets
+    are saved to a file for continuation if break in the code. 
     
+    Simply wait a minute and restart program, if the following error comes up, which may happen if the list of 
+    tickets to import is long: 
+        
+        'Fatal Python error: none_dealloc: deallocating None: bug likely caused by a refcount error in a C extension'
+
+    :param
+        batch_size (int, optional): Number of tickets to process in each batch. Defaults to 100.
+        save_filename (str, optional): Name of the file to save remaining tickets. Defaults to 'remaining_tickets.json'.
+
+    :return
+        None
+
+    :raises
+        Exception: Any exception that might occur during ticket processing.
+
+    :example
+        process_tickets()
     """
     try:
         with open(save_filename, 'r') as file:
             remaining_tickets = json.load(file)
 
-        # -------------------------------- DEFINE GLOBAL VARIABLES --------------------------------- 
+        # ---------------------------------- DEFINE GLOBAL VARIABLES ----------------------------------- 
 
         hostname = 'spiceworks'
         database = 'osticket-clone'
@@ -149,7 +171,8 @@ if __name__ == '__main__':
     all_ticket_ids = [row[0] for row in result.fetchall()]
     con.close()
 
-    print(sorted(random.sample(all_ticket_ids, 15)))
-    save_filepath = 'all_tickets.txt'
-    with open(save_filepath, 'w') as file:
-        json.dump(all_ticket_ids, file)
+    #print(sorted(random.sample(all_ticket_ids, 15)))
+    
+    #save_filepath = 'remaining_tickets.txt'
+    #with open(save_filepath, 'w') as file:
+    #    json.dump(all_ticket_ids, file)
