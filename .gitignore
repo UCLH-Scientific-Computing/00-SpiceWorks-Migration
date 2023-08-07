@@ -12,6 +12,8 @@ staff_email_to_id.txt
 temp.html
 SWlocation.txt
 staff_email_to_un.txt
+remaining_tickets.txt
+all_tickets.txt
 
 # C extensions
 *.so

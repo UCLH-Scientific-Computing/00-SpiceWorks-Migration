@@ -3,10 +3,8 @@
 # Author:   Sierra Bonilla
 # Date:     01-08-2023
 
-# import mysql.connector
+import mysql.connector
 import json
-
-import re
 
 def ticket_exists(connection, ticket_number_str):
     """
@@ -80,29 +78,28 @@ def check_key_in_json_file(key, file_path):
         raise error
 
 def get_rid_of_all_fun(expression):
-    # from https://stackoverflow.com/a/50752058/17732851
+    """
+    Remove non-ASCII characters from a string, preserving punctuation.
+    
+    This function removes characters that are not part of the standard ASCII range
+    (hexadecimal 00 to 7F) from the input string. Punctuation characters will not
+    be removed.
+    
+    :param
+        input_string (str): The string from which to remove non-ASCII characters.
+        
+    :return
+        str: A new string with non-ASCII characters removed.
+    """
     return ''.join(char for char in expression if ord(char) < 0x10000)
-    # half_fun = re.sub(r'\\U[a-fA-F0-9]{8}', '', expression)
-    # quarter_fun = re.sub(r'\\x[a-fA-F0-9]{2}', '', half_fun)
-    # no_fun = re.sub(r'U\+[a-fA-F0-9]{4}', '', quarter_fun)
-    # return no_fun
 
 if __name__ == '__main__':
      
-    ticket_details = "User already exists! \U0001F480"
+    ticket_details = "I am a string with emojis! \U0001F480 😁 \xF0\x9F\x98\x8A"
+    #ticket_details = """<p><code>testing html</code> on :</p><blockquote> test block quote </blockquote><em>hi</em><br><br>some spaces<br>"""
 
     print(ticket_details)
 
-    raw_ticket_details = r'%s' %ticket_details
-    #r"{}".format(ticket_details)
+    exp = get_rid_of_all_fun(ticket_details)
 
-    print(raw_ticket_details)
-
-    #exp = r"User already exists! \U0001F480"
-    print(raw_ticket_details)
-    print(get_rid_of_all_fun(raw_ticket_details))
-    exp = r'User already exists! \xF0\x9F\x98\x8A' 
     print(exp)
-    print(get_rid_of_all_fun(exp))
-    exp = 'User already exists! U+1F60B' 
-    print(get_rid_of_all_fun(exp))
