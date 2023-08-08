@@ -1,4 +1,4 @@
-# 00-SpiceWorks-Migration
+# 00-SpiceWorks-OsTicket-Migration
 [Spiceworks 7.5.00107](https://www.spiceworks.com/) to [OsTicket v1.18](https://github.com/osTicket/osTicket.git) database migration 🦆
 
 This migration process involves transferring ticket data, including ticket details, comments, and user information, from the Spiceworks database to the osTicket database - notably, we ignored attachments. To achieve this, import functions have been created in python based on the analysis of osTicket's SQL logs. There are probably many other ways to automate migration, this is just one method. Using this method will require customizing the code written here, but hopefully this helps cut down some of the headache of spending hours scrolling through query logs...
@@ -23,6 +23,8 @@ You can install the required packages using pip:
 
 
 ## Usage
+
+Before starting to migrate anything, backup both databases. Even better - create two test databases!
 
 The **`process_tickets`** function in `main.py` shows an example of how to use the functions created below. Also, workflow explained step by step in `MIGRATION_NOTEBOOK.PY`. The `PLAN.md` describes each function with greater detail. 
 
