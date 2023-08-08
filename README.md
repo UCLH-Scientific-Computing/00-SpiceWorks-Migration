@@ -3,7 +3,9 @@ Spiceworks 7.5.00107 to OsTicket v1.18 database migration 🦆
 
 This migration process involves transferring ticket data, including ticket details, comments, and user information, from the Spiceworks database to the osTicket database - notably, we ignored attachments. To achieve this, import functions have been created in python based on the analysis of osTicket's SQL logs. There are probably many other ways to automate migration, this is just one method. Using this method will require customizing the code written here, but hopefully this helps cut down some of the headache of spending hours scrolling through query logs...
 
-![Migration Process](imgs/migration-process.png)
+<p align="center">
+   <img src=imgs/migration-process.png alt="Migration Process" width="400"></img>
+</p>
 
 ## Getting Started 
 
@@ -62,7 +64,9 @@ Within file `create_ticket_helpers_fns.py`
 
 Within file `user_exists.py` & `create_user.py`
 
-![Create User](imgs/create-user.png)
+<p align="center">
+   <img src=imgs/create-user.png alt="Create User" width="700"></img>
+</p>
 
 ## Functions 
 - Check if user exists  `check_user_account_exists`
@@ -72,7 +76,9 @@ Within file `user_exists.py` & `create_user.py`
 
 Within file `create_ticket_helper_fns` & `create_ticket.py`
 
-![Create Ticket](imgs/create-ticket.png)
+<p align="center">
+   <img src=imgs/create-ticket.png alt="Create Ticket" width="700"></img>
+</p>
 
 ## Functions 
 - Check if a ticket exists `ticket_exists`
@@ -80,12 +86,17 @@ Within file `create_ticket_helper_fns` & `create_ticket.py`
 
 # <span style="color:blue">**OsTicket: Posting an Internal Note**</span>
 
-![Create Comment](imgs/create-comment.png)
+<p align="center">
+   <img src=imgs/create-comment.png alt="Create Comment" width="700"></img>
+</p>
 
 ## Functions
 - Create a Comment `create_comment`
 
 ### Example Comment Format
-![Example Comment](imgs/ExampleComment.png)
+
+<p align="center">
+   <img src=imgs/ExampleComment.png alt="Example Comment" width="700"></img>
+</p>
 
 
