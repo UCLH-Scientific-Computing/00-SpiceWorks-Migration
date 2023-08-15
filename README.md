@@ -4,7 +4,7 @@
 This migration process involves transferring ticket data, including ticket details, comments, and user information, from the Spiceworks database to the osTicket database - notably, we ignored attachments. To achieve this, import functions have been created in python based on the analysis of osTicket's SQL logs. There are probably many other ways to automate migration, this is just one method. Using this method will require customizing the code written here, but hopefully this helps cut down some of the headache of spending hours scrolling through query logs...
 
 <p align="center">
-   <img src=imgs/migration-process.png alt="Migration Process" width="400"></img>
+   <img src=imgs/migration-process-update.png alt="Migration Process" width="400"></img>
 </p>
 
 ## Getting Started 
